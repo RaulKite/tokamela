@@ -1,8 +1,6 @@
 h1. !http://railsapps.github.com/images/rails-36x36.jpg(TIKA)! Tika App.  Where are your busines phones?
 
-This application will help you to control your smartphones
-
-Rails 3.2 example application shows how to use "Devise":http://github.com/plataformatec/devise with "CanCan":https://github.com/ryanb/cancan and "Twitter Bootstrap":http://twitter.github.com/bootstrap/. 
+This application will help you to control your business smartphones
 
 * "Sign_up your business":http://kaneda.inf.um.es/sign_up
 * Add your phones
@@ -11,9 +9,9 @@ Rails 3.2 example application shows how to use "Devise":http://github.com/plataf
 
 !http://railsapps.github.com/images/rails3-bootstrap-devise-cancan.png(Rails Application for Devise with CanCan and Twitter Bootstrap)!
 
-h2. !http://twitter-badges.s3.amazonaws.com/t_logo-a.png(Follow on Twitter)!:http://www.twitter.com/caliandras Follow on Twitter
+h2. !http://twitter-badges.s3.amazonaws.com/t_logo-a.png(Follow on Twitter)!:http://www.twitter.com/tika_app Follow on Twitter
 
-Follow the project on Twitter: "@caliandras":http://twitter.com/caliandras. Please tweet some praise if you like what you've found.
+Follow the project on Twitter: "@tika_app":http://twitter.com/tika_app. Please tweet some praise if you like what you've found.
 
 
 h2. Dependencies
@@ -175,5 +173,5 @@ h2. Credits
 
 "Raul Sanchez Sanchez <raul@um.es>":mailto:<raul@um.es>
 
-Is the app useful to you? Follow the project on Twitter: "@caliandras":http://twitter.com/caliandras
+Is the app useful to you? Follow the project on Twitter: "@tika_app":http://twitter.com/tika_app
 and tweet some praise. I'd love to know you were helped out by what I've put together.
