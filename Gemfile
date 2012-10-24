@@ -13,6 +13,8 @@ end
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'guard-rspec'
+  gem 'rb-inotify'
 end
 
 

@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe User do
   
   before(:each) do
@@ -98,6 +99,19 @@ describe User do
       @user.encrypted_password.should_not be_blank
     end
 
+  end
+
+  describe "roles" do
+    context "Admin Role" do
+    
+      before(:each) do
+        
+      end
+      it "can edit roles" do
+        pending "admin can edit roles"        
+      end
+
+    end
   end
 
 end
