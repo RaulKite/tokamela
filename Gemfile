@@ -13,8 +13,13 @@ end
 
 group :development, :test do
   gem 'sqlite3'
+  end
+
+group :test do
   gem 'guard-rspec'
   gem 'rb-inotify'
+  gem 'spork'
+  gem 'guard-spork'
 end
 
 
