@@ -105,10 +105,11 @@ describe User do
     context "Admin Role" do
     
       before(:each) do
-        
+        @user = FactoryGirl.create(:user)
       end
-      it "can edit roles" do
-        pending "admin can edit roles"        
+      it "Should have admin role after add admin role" do
+        @user.add_role :admin        
+        @user.has_role?(:admin).should be_true
       end
 
     end
