@@ -43,3 +43,6 @@ gem "quiet_assets", ">= 1.0.1", :group => :development
 
 gem 'capistrano'
 gem 'rvm-capistrano'
+gem 'pry', :group => :development
+
+

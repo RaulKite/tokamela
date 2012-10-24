@@ -44,7 +44,7 @@ describe UsersController do
 
 
       it "can change role to users" do
-        put :update, :id=> @user.id, :user => {:role_ids => '2'} 
+        put :update, :id => @user.id, :user => {:role_ids => '2'} 
         @user.has_role?(:user).should be_false
       end
 
@@ -56,18 +56,42 @@ describe UsersController do
 
 
       it "can delete users" do
-        pending
+        delete :destroy, :id => @user.id
+        response.should_not be_success
+        pending "Hay que ver que pasa aqui, si es por el jscript o que?"
       end
     end
 
 
     context "Company Rol" do
+      before (:each) do
+        Role.create([
+          { :name => 'admin' }, 
+          { :name => 'company' }, 
+          { :name => 'user' }
+          ], :without_protection => true)
+
+        @company = FactoryGirl.create(:user)
+        @company.add_role :company
+        sign_in @company
+      end
+ 
+
       it "can't change role to users" do
-        pending
+        @user = FactoryGirl.create(:user)
+        @user.add_role :user
+        put :update, :id=> @user.id, :user => {:role_ids => '2'}
+        @user.has_role?(:company).should_not be_true
       end
 
       it "can add regular users in his company" do
-        pending
+
+        pending "Arbol de usuarios. Crear toda la pesca"
+        @attr = { :name => "username", :email => "mail@example.com", :password => "changeit", :password_confirmation => "changeit" }
+        post :create, :post => @attr
+        user2 = User.find_by_email("mail@example.com") 
+        user2.should_not be_nil
+        user2.company.should be_equal @user.company
       end
 
       it "can delete regular users of his company" do 

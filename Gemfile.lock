@@ -239,6 +239,7 @@ DEPENDENCIES
   jquery-rails
   launchy (>= 2.1.2)
   mysql2
+  pry
   quiet_assets (>= 1.0.1)
   rails (= 3.2.8)
   rb-inotify
