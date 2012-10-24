@@ -8,7 +8,7 @@ set :application, "tika"
 set :scm, :git
 set :repository, "git://github.com/RaulKite/tika.git"
 
-server "155.54.205.183", :web, :app, :db, :primary => true
+server "155.54.205.149", :web, :app, :db, :primary => true
 
 ssh_options[:port] = 22
 ssh_options[:keys] = "~/.ssh/insecure_private_key_vagrant"

@@ -19,7 +19,7 @@ test: &test
   timeout: 5000
 
 production:
-  adapter: ,mysql
+  adapter: mysql
   database: tika_production
   user: root
   passwd: root
