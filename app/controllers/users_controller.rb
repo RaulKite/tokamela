@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    authorize! :index, @user, :message => 'Not authorized as an administrator.'
+    authorize! :index, @user, :message => 'Not authorized as an administrator. jajaja'
     @users = User.all
   end
 
@@ -13,10 +13,12 @@ class UsersController < ApplicationController
   def update
     authorize! :update, @user, :message => 'Not authorized as an administrator.'
     @user = User.find(params[:id])
-    # Can't remove admin role to admin
-    if @user.has_role?(:admin) && params[:user][:role_ids].include?("1") == false 
-      redirect_to user_path, :alert => "Unable to update user. Can't remove admin rol to admin."
-    elsif @user.update_attributes(params[:user], :as => :admin)
+#    binding.pry
+    if @user.update_attributes(params[:user], :as => :admin)
+      redirect_to users_path, :notice => "User updated."
+    elsif @user.update_attributes(params[:user], :as => :jefe)
+
+      binding.pry
       redirect_to users_path, :notice => "User updated."
     else
       redirect_to users_path, :alert => "Unable to update user."
@@ -34,8 +36,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def create
+  def createEmployee
     @user = User.new(params[:post])
+    @user.jefe = current_user
     @user.save
     redirect_to users_path, :notice => "User #{@user.name} created."
 

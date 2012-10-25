@@ -22,11 +22,11 @@ describe UsersController do
 
   describe "Update" do
 
-    context "admin rol"
+    context "When user rol is :admin"
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
-          { :name => 'company' }, 
+          { :name => 'jefe' }, 
           { :name => 'user' }
           ], :without_protection => true)
 
@@ -39,7 +39,7 @@ describe UsersController do
       
       it "can change role to users" do
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
-        @user.has_role?(:company).should be_true
+        @user.has_role?(:jefe).should be_true
       end
 
 
@@ -49,9 +49,9 @@ describe UsersController do
       end
 
 
-      it "can't delete admin role from himself" do
+      it "can delete admin role from himself" do    
         put :update, :id=> @admin.id, :user => {:role_ids => '2'}
-        @admin.has_role?(:admin).should be_true
+        @admin.has_role?(:admin).should be_false
       end
 
 
@@ -63,39 +63,52 @@ describe UsersController do
     end
 
 
-    context "Company Rol" do
+    context "When user rol is :rol" do
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
-          { :name => 'company' }, 
+          { :name => 'jefe' }, 
           { :name => 'user' }
           ], :without_protection => true)
 
-        @company = FactoryGirl.create(:user)
-        @company.add_role :company
-        sign_in @company
+        @jefe = FactoryGirl.create(:user)
+        @jefe.add_role :jefe
+        sign_in @jefe
       end
  
 
-      it "can't change role to users" do
+      it "can change role to jefe to employees " do
+        @user = FactoryGirl.create(:user)
+        @user.add_role :user
+        @user.jefe = @jefe
+        put :update, :id=> @user.id, :user => {:role_ids => '2'}
+        @user.has_role?(:jefe).should be_true
+      end
+
+      it "can't change role if not employee" do
         @user = FactoryGirl.create(:user)
         @user.add_role :user
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
-        @user.has_role?(:company).should_not be_true
+        @user.has_role?(:jefe).should_not be_true
       end
 
       it "can add regular users in his company" do
-
-        pending "Arbol de usuarios. Crear toda la pesca"
         @attr = { :name => "username", :email => "mail@example.com", :password => "changeit", :password_confirmation => "changeit" }
-        post :create, :post => @attr
+        post :createEmployee, :post => @attr
         user2 = User.find_by_email("mail@example.com") 
         user2.should_not be_nil
-        user2.company.should be_equal @user.company
+        user2.jefe_id.should == @jefe.id
       end
 
       it "can delete regular users of his company" do 
         pending
       end
-  end
+    end
+
+    context "When user rol is :user" do
+
+
+    end
+
+
 end

@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120418171112) do
+ActiveRecord::Schema.define(:version => 20121025095731) do
+
+  create_table "empleados_users", :id => false, :force => true do |t|
+    t.integer "empleado_id"
+    t.integer "user_id"
+  end
+
+  add_index "empleados_users", ["empleado_id", "user_id"], :name => "index_empleados_users_on_empleado_id_and_user_id"
+  add_index "empleados_users", ["user_id", "empleado_id"], :name => "index_empleados_users_on_user_id_and_empleado_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name"
@@ -38,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20120418171112) do
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.string   "name"
+    t.integer  "jefe_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
