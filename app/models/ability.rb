@@ -9,8 +9,8 @@ class Ability
         # Control total sobre empleados y sobre si mismo
         can :manage, User, :jefe_id => user.id
         can :manage, User, :id => user.id
-    #elsif user.has_role? :user
-    #    can :update, User, :id => user.id, :user => {'roles_ids' => '2'}
+    elsif user.has_role? :user
+        can :show, User, :id => user.id
     end
 
     

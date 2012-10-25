@@ -3,26 +3,92 @@ require 'spec_helper'
 describe UsersController do
 
   describe "GET 'show'" do
+    describe "When user rol is :admin" do
 
-    before (:each) do
-      @user = FactoryGirl.create(:user)
-      sign_in @user
+      before (:each) do
+        @admin = FactoryGirl.create(:user)
+        @admin.add_role :admin
+        sign_in @admin
+      end
+
+      it "should be successful to see himself" do
+        get :show, :id => @admin.id
+        response.should be_success
+      end
+    
+      it "should find the right user" do
+        get :show, :id => @admin.id
+        assigns(:user).should == @admin
+      end
     end
+  
+    describe "When user rol is :jefe" do
 
-    it "should be successful" do
-      get :show, :id => @user.id
-      response.should be_success
+      before (:each) do
+        @jefe = FactoryGirl.create(:user)
+        @jefe.add_role :jefe
+        sign_in @jefe
+      end
+
+      it "should be successful to see himself" do
+        get :show, :id => @jefe.id
+        response.should be_success
+      end
+
+
+      it "should be successful to see an employee" do
+        user = FactoryGirl.create(:user)
+        user.jefe = @jefe
+        user.save
+        get :show, :id => user.id
+        response.should be_success
+      end
+
+      it "should't be successful to see not an employee" do
+        user = FactoryGirl.create(:user)
+        get :show, :id =>   user.id
+        response.should_not be_success
+      end
+
+    
+      it "should find the right user" do
+        get :show, :id => @jefe.id
+        assigns(:user).should == @jefe
+      end
+
+
     end
     
-    it "should find the right user" do
-      get :show, :id => @user.id
-      assigns(:user).should == @user
+    describe "When user rol is :user" do
+
+      before (:each) do
+        @user = FactoryGirl.create(:user)
+        @user.add_role :user
+        sign_in @user
+      end
+
+      it "should be successful to see himself" do
+        get :show, :id => @user.id
+        response.should be_success
+      end
+    
+      it "should find the right user" do
+        get :show, :id => @user.id
+        assigns(:user).should == @user
+      end
+
+      it "should't be successful to see another user" do
+        user2 = FactoryGirl.create(:user)
+        get :show, :id =>   user2.id
+        response.should_not be_success
+      end
+
     end
   end
 
-  describe "Update" do
+  describe "PUT Update" do
 
-    context "When user rol is :admin"
+    describe "When user rol is :admin" do
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
@@ -49,7 +115,7 @@ describe UsersController do
     end
 
 
-    context "When user rol is :jefe" do
+    describe "When user rol is :jefe" do
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
@@ -62,7 +128,6 @@ describe UsersController do
         sign_in @jefe
       end
  
-
       it "can change role to jefe to employees " do
         @user = FactoryGirl.create(:user)
         @user.add_role :user
@@ -72,19 +137,16 @@ describe UsersController do
         @user.has_role?(:jefe).should be_true
       end
 
-
       it "can't change role if not employee" do
         @user = FactoryGirl.create(:user)
         @user.add_role :user
         @user.save
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
         @user.has_role?(:jefe_id).should_not be_true
-      end
-
-     
+      end   
     end
 
-    context "When user rol is :user" do
+    describe "When user rol is :user" do
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
@@ -108,35 +170,60 @@ describe UsersController do
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
         @user2.has_role?(:jefe).should be_false
       end
-  
 
     end
+  end
 
+  describe "POST createEmployee" do
+    
+    context "When user rol is :jefe" do
 
-    describe "Destroy" do
-      describe "When user rol is :admin" do
+      before (:each) do
+        Role.create([
+          { :name => 'admin' }, 
+          { :name => 'jefe' }, 
+          { :name => 'user' }
+          ], :without_protection => true)
 
-        it "can delete users" do
-          pending
-          delete :destroy, :id => @user.id
-          response.should_not be_success
-          pending "Hay que ver que pasa aqui, si es por el jscript o que?"
-        end
+        @jefe = FactoryGirl.create(:user)
+        @jefe.add_role :jefe
+        sign_in @jefe
       end
 
-      it "can add regular users in his company" do
-        pending
+      it "can add regular users. He will be the jefe" do
         @attr = { :name => "username", :email => "mail@example.com", :password => "changeit", :password_confirmation => "changeit" }
         post :createEmployee, :post => @attr
         user2 = User.find_by_email("mail@example.com") 
         user2.should_not be_nil
-        user2.jefe_id.should == @jefe.id
+        user2.jefe.should == @jefe
       end
-
-      it "can delete regular users of his company" do 
-        pending
-      end
-
     end
+
+    context "When user rol is :user" do
+      before (:each) do
+        Role.create([
+          { :name => 'admin' }, 
+          { :name => 'jefe' }, 
+          { :name => 'user' }
+          ], :without_protection => true)
+
+        @user = FactoryGirl.create(:user)
+        @user.add_role :user
+        sign_in @user
+      end
+
+      it "can't add regular users." do
+        @attr = { :name => "username", :email => "correo@example.com", :password => "changeit", :password_confirmation => "changeit" }
+        post :createEmployee, :post => @attr
+        user2 = User.find_by_email("correo@example.com") 
+        user2.should be_nil
+      end
+    end
+
+  end
+
+  describe "Destroy" do
+    pending
+  end
 
 end

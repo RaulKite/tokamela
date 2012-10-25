@@ -2,12 +2,15 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-#    authorize! :index, @user, :message => 'Not authorized as an administrator. jajaja'
-    @users = User.all
+    
+      @users = User.all
+    
+   # authorize! :index, @user, :message => 'Not authorized to see users.'
   end
 
   def show
     @user = User.find(params[:id])
+    authorize! :show, @user, :message => 'Not authorized.'
   end
   
   def update
@@ -16,6 +19,7 @@ class UsersController < ApplicationController
     authorize! :update, @user, :message => 'Not authorized.'
 
     if @user.update_attributes(params[:user])
+      @user.save
       redirect_to users_path, :notice => "User updated."
     else
       redirect_to users_path, :alert => "Unable to update user."
@@ -33,11 +37,15 @@ class UsersController < ApplicationController
 #    end
 #  end
 
-#  def createEmployee
-#    @user = User.new(params[:post])
-#    @user.jefe = current_user
-#    @user.save
-#    redirect_to users_path, :notice => "User #{@user.name} created."
-#  end
+  def createEmployee
+    @user = User.new(params[:post])
+    @user.jefe = current_user
+    authorize! :createEmployee, @user, :message => 'Not authorized to create users.'
+    if @user.save
+      redirect_to users_path, :notice => "User created."
+    else 
+      redirect_to users_path, :notice => "Unable to create user."
+    end
+  end
 
 end
