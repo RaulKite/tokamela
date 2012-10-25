@@ -42,28 +42,14 @@ describe UsersController do
         @user.has_role?(:jefe).should be_true
       end
 
-
       it "can change role to users" do
         put :update, :id => @user.id, :user => {:role_ids => '2'} 
         @user.has_role?(:user).should be_false
-      end
-
-
-      it "can delete admin role from himself" do    
-        put :update, :id=> @admin.id, :user => {:role_ids => '2'}
-        @admin.has_role?(:admin).should be_false
-      end
-
-
-      it "can delete users" do
-        delete :destroy, :id => @user.id
-        response.should_not be_success
-        pending "Hay que ver que pasa aqui, si es por el jscript o que?"
-      end
+      end      
     end
 
 
-    context "When user rol is :rol" do
+    context "When user rol is :jefe" do
       before (:each) do
         Role.create([
           { :name => 'admin' }, 
@@ -81,18 +67,65 @@ describe UsersController do
         @user = FactoryGirl.create(:user)
         @user.add_role :user
         @user.jefe = @jefe
+        @user.save
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
         @user.has_role?(:jefe).should be_true
       end
 
+
       it "can't change role if not employee" do
         @user = FactoryGirl.create(:user)
         @user.add_role :user
+        @user.save
         put :update, :id=> @user.id, :user => {:role_ids => '2'}
-        @user.has_role?(:jefe).should_not be_true
+        @user.has_role?(:jefe_id).should_not be_true
+      end
+
+     
+    end
+
+    context "When user rol is :user" do
+      before (:each) do
+        Role.create([
+          { :name => 'admin' }, 
+          { :name => 'jefe' }, 
+          { :name => 'user' }
+          ], :without_protection => true)
+
+        @user = FactoryGirl.create(:user)
+        @user.add_role :user
+        sign_in @user
+      end     
+
+      it "can't change his role" do
+        put :update, :id=> @user.id, :user => {:role_ids => '2'}
+        @user.has_role?(:jefe).should be_false
+      end
+
+      it "can't change role of anybody" do
+        @user2 = FactoryGirl.create(:user)
+        @user2.add_role :user
+        put :update, :id=> @user.id, :user => {:role_ids => '2'}
+        @user2.has_role?(:jefe).should be_false
+      end
+  
+
+    end
+
+
+    describe "Destroy" do
+      describe "When user rol is :admin" do
+
+        it "can delete users" do
+          pending
+          delete :destroy, :id => @user.id
+          response.should_not be_success
+          pending "Hay que ver que pasa aqui, si es por el jscript o que?"
+        end
       end
 
       it "can add regular users in his company" do
+        pending
         @attr = { :name => "username", :email => "mail@example.com", :password => "changeit", :password_confirmation => "changeit" }
         post :createEmployee, :post => @attr
         user2 = User.find_by_email("mail@example.com") 
@@ -103,12 +136,7 @@ describe UsersController do
       it "can delete regular users of his company" do 
         pending
       end
-    end
-
-    context "When user rol is :user" do
-
 
     end
-
 
 end

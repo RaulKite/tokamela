@@ -8,13 +8,19 @@
 puts 'CREATING ROLES'
 Role.create([
   { :name => 'admin' }, 
-  { :name => 'user' }, 
-  { :name => 'VIP' }
+  { :name => 'jefe' }, 
+  { :name => 'user' }
 ], :without_protection => true)
 puts 'SETTING UP DEFAULT USER LOGIN'
 user = User.create! :name => 'Raul Sanchez', :email => 'raul@um.es', :password => 'qwerty123', :password_confirmation => 'qwerty123'
 puts 'New user created: ' << user.name
 user2 = User.create! :name => 'Raul Sanchez 2', :email => 'raulxininen@gmail.com', :password => 'qwerty123', :password_confirmation => 'qwerty123'
 puts 'New user created: ' << user2.name
+
+user3 = User.create! :name => 'Raul Sanchez 3', :email => 'raul3@um.es', :password => 'qwerty123', :password_confirmation => 'qwerty123'
+
 user.add_role :admin
 user2.add_role :jefe
+user3.add_role :user
+
+
